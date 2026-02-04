@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Media y Desviación Estándar | UG</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-dragdata@2.0.0"></script>
+  <link rel="stylesheet" href="styles.css">
+  <script src="main.js" defer></script>
+
+</head>
+
+<body>
+
+<header>
+  <h1>Media aritmética y Desviación Estándar</h1>
+  <p> Universidad de Guanajuato</p>
+</header>
+
+<section>
+
+<!-- MEDIA -->
+<div class="card">
+  <h2>Media aritmética</h2>
+
+  <p>La media es el valor que equilibra los datos.</p>
+  <div class="formula">x̄ = (x₁ + x₂ + ... + xₙ) / n</div>
+  <div id="meanEquation" class="formula"></div>
+
+  <div class="explain">
+    🖱️ Arrastra cualquier punto.<br>
+    ➖ Las líneas punteadas muestran la distancia de cada dato a la media.
+  </div>
+
+  <canvas id="meanChart"></canvas>
+
+  <div class="values">
+    <div><strong>Media (x̄):</strong> <span id="meanValue"></span></div>
+  </div>
+
+  <div id="meanDistances" class="values"></div>
+</div>
+
+<!-- DESVIACIÓN -->
+<div class="card">
+  <h2>Desviación estándar</h2>
+
+  <p>Mide qué tan dispersos están los datos respecto a la media.</p>
+  <div class="formula">σ = √( Σ(xᵢ − x̄)² / n )</div>
+
+  <div id="stdEquation" class="formula"></div>
+
+  <div class="explain">
+    🖱️ También puedes mover estos puntos.<br>
+    📐 Observa cómo al aumentar la separación, la desviación estándar crece.
+  </div>
+
+  <canvas id="stdChart"></canvas>
+
+  <div class="values">
+    <div><strong>Desviación estándar (σ):</strong> <span id="stdValue"></span></div>
+  </div>
+</div>
+
+</section>
+
+<footer>
+  Universidad de Guanajuato · Departamento de Estudios Multidiciplinarios
+</footer>
+
+</body>
+</html>
