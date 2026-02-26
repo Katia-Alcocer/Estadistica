@@ -15,60 +15,129 @@
 <body>
 
 <header>
-  <h1>Media aritmética y Desviación Estándar</h1>
-  <p> Universidad de Guanajuato</p>
+<h1>Media aritmética y Desviación estándar</h1>
+<p>Universidad de Guanajuato</p>
 </header>
 
 <section>
 
-<!-- MEDIA -->
+<!-- TEORÍA -->
 <div class="card">
-  <h2>Media aritmética</h2>
 
-  <p>La media es el valor que equilibra los datos.</p>
-  <div class="formula">x̄ = (x₁ + x₂ + ... + xₙ) / n</div>
-  <div id="meanEquation" class="formula"></div>
+<h2>Media aritmética</h2>
 
-  <div class="explain">
-    🖱️ Arrastra cualquier punto.<br>
-    ➖ Las líneas punteadas muestran la distancia de cada dato a la media.
+<p>
+La <strong>media aritmética</strong> o promedio (<strong>x̄</strong>) es la medida de tendencia central más utilizada. 
+Se calcula sumando todos los valores (<strong>xᵢ</strong>) de un conjunto de datos y dividiendo ese resultado 
+entre el número total de elementos (<strong>n</strong>). 
+Proporciona un "centro de gravedad" de la distribución, aunque es sensible a valores extremos.
+</p>
+
+<div class="formula">
+  <div class="imag">
+  <img src="Images/EqMedia.png" alt="x̄ = ( Σ xᵢ ) / n = (x₁ + x₂ + x₃ + … + xₙ) / n" >
   </div>
-
-  <canvas id="meanChart"></canvas>
-
-  <div class="values">
-    <div><strong>Media (x̄):</strong> <span id="meanValue"></span></div>
-  </div>
-
-  <div id="meanDistances" class="values"></div>
 </div>
 
-<!-- DESVIACIÓN -->
+<h3>Características principales de la media aritmética</h3>
+
+<p><strong>Tipos:</strong></p>
+<ul>
+<li><strong>Media poblacional (μ):</strong> Se utiliza cuando se consideran todos los elementos de la población.</li>
+<li><strong>Media muestral (x̄):</strong> Se utiliza cuando se trabaja con una muestra.</li>
+</ul>
+
+<p><strong>Sensibilidad:</strong> 
+Los valores atípicos (muy altos o muy bajos) afectan significativamente el resultado. 
+Esto hace que el valor de la media no sea un valor equilibre a la mayoría de los datos.
+</p>
+
+  <div class="image">
+  <img src="Images/GraSencM.png" alt="Representación gráfica de la media aritmética" >
+  <p>Figura 1. Representación gráfica de la media aritmética.</p>
+  </div>
+
+<p><strong>Propiedad fundamental:</strong> 
+La suma de las desviaciones de los datos respecto a la media es igual a cero:
+</p>
+
+<div class="formula">
+(x₁ − x̄) + (x₂ − x̄) + (x₃ − x̄) + … + (xₙ − x̄) = 0
+</div>
+
+
+<br>
+<br>
+
+<h2>Desviación estándar</h2>
+
+<p>
+La <strong>desviación estándar</strong> o desviación típica(<strong>σ</strong>) es una medida de dispersión más común e indica cuánto se dispersan los datos alrededor de la media. 
+Esta se calcula como la raíz cuadrada del promedio de los cuadrados de las desviaciones de los valores de un conjunto de datos (<strong>xᵢ</strong>) con respecto al valor de su media aritmética (<strong>x̄</strong>).  
+</p>
+<div class="formula">
+   <div class="imag">
+  <img src="Images/EqDes.png" alt="σ = √[ Σ (xᵢ − x̄)² / n ]" >
+  </div> 
+</div>
+
+
+<h3>Características principales de la desviación estándar</h3>
+
+<p><strong>Significado:</strong> 
+Un valor alto indica datos muy dispersos; 
+un valor bajo indica datos concentrados cerca de la media.
+</p>
+
+<p><strong>Tipos:</strong></p>
+<ul>
+<li><strong>Poblacional (σ):</strong> Cuando se analizan todos los datos de la población.</li>
+<li><strong>Muestral (s):</strong> Cuando se analiza una muestra.</li>
+</ul>
+<div class="formula">
+   <div class="imag">
+  <img src="Images/EqTipDes.png" alt="s = √[ Σ (xᵢ − x̄)² / n ]" >
+  </div> 
+</div>
+ 
+
+
+<p><strong>Regla empírica (distribución normal):</strong> Si los datos agrupados forman una distribución simétrica unimodal, al menos el 60% (específicamente, a menudo alrededor del 68% o más, dependiendo de la forma de la "campana") de los datos están contenidos en el intervalo [x ̅-σ, x ̅+σ]. Si la distribución es poco asimétrica esta regla se puede cumplir.</p>
+
+
+<div class="image">
+<img src="Images/GraReDes.png" alt="Regla empírica de la distribución normal">
+<p>Figura 2. Regla empírica en una distribución normal.</p>
+</div>
+</div>
+
 <div class="card">
-  <h2>Desviación estándar</h2>
+<h2>Visualización interactiva</h2>
 
-  <p>Mide qué tan dispersos están los datos respecto a la media.</p>
-  <div class="formula">σ = √( Σ(xᵢ − x̄)² / n )</div>
+<div class="explain">
+🖱️ Arrastra los puntos.<br>
+📏 Observa cómo cambian la media y la desviación estándar.
+</div>
 
-  <div id="stdEquation" class="formula"></div>
+<canvas id="chart"></canvas>
 
-  <div class="explain">
-    🖱️ También puedes mover estos puntos.<br>
-    📐 Observa cómo al aumentar la separación, la desviación estándar crece.
-  </div>
+<div class="values">
+<strong>Media:</strong> <span id="meanValue"></span><br>
+<strong>Desviación estándar:</strong> <span id="stdValue"></span>
+</div>
+</div>
 
-  <canvas id="stdChart"></canvas>
+<div class="card">
+<h2>Cálculo con los valores actuales</h2>
 
-  <div class="values">
-    <div><strong>Desviación estándar (σ):</strong> <span id="stdValue"></span></div>
-  </div>
+<div id="meanCalc" class="formula"></div>
+<div id="stdCalc" class="formula"></div>
 </div>
 
 </section>
 
 <footer>
-  Universidad de Guanajuato · Departamento de Estudios Multidiciplinarios
+Universidad de Guanajuato · DEM
 </footer>
-
 </body>
 </html>

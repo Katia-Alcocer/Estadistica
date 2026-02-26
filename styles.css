@@ -1,72 +1,76 @@
- :root {
-      --ug-dorado: #C9A24D;
-      --ug-azul: #003A8F;
-      --ug-gris: #F4F4F4;
-    }
+:root{
+  --ug-azul:#003A8F;
+  --ug-dorado:#C9A24D;
+  --ug-gris:#f4f4f4;
+}
+body{
+  margin:0;
+  font-family:'Segoe UI',sans-serif;
+  background:var(--ug-gris);
+}
+header{
+  background:var(--ug-azul);
+  color:white;
+  padding:2rem;
+  text-align:center;
+}
+header h1{color:var(--ug-dorado)}
+section{
+  max-width:1100px;
+  margin:auto;
+  padding:2rem;
+}
+.card{
+  background:white;
+  padding:2rem;
+  border-radius:18px;
+  box-shadow:0 10px 25px rgba(0,0,0,.1);
+  margin-bottom:3rem;
+}
+.formula{
+  background:#fafafa;
+  padding:1rem;
+  border-left:6px solid var(--ug-dorado);
+  font-size:1.2rem;
+  margin:1rem 0;
+}
+.explain{
+  background:#fdfaf2;
+  padding:1rem;
+  border:1px dashed var(--ug-dorado);
+  border-radius:10px;
+}
+.values{
+  margin-top:1rem;
+  font-size:1.1rem;
+}
+.imag img{
+  width: 300px;
+  height: auto;
+}
+.image{
+  text-align: center;   
+  margin: 2rem 0;  
+      
+}
 
-    body {
-      margin: 0;
-      font-family: 'Segoe UI', sans-serif;
-      background: var(--ug-gris);
-    }
+.image img{
+  display: block;
+  margin: 0 auto;  
+  width: 400px;     
+  max-width: 100%;     
+}
 
-    header {
-      background: var(--ug-azul);
-      color: white;
-      padding: 2rem;
-      text-align: center;
-    }
-
-    header h1 {
-      color: var(--ug-dorado);
-      margin: 0;
-    }
-
-    section {
-      max-width: 1100px;
-      margin: auto;
-      padding: 2rem;
-    }
-
-    .card {
-      background: white;
-      padding: 2rem;
-      border-radius: 18px;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-      margin-bottom: 3rem;
-    }
-
-    .formula {
-      background: var(--ug-gris);
-      padding: 1rem;
-      border-left: 6px solid var(--ug-dorado);
-      font-size: 1.2rem;
-      margin: 1rem 0;
-    }
-
-    .values {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 1rem;
-      margin-top: 1rem;
-      font-size: 1.1rem;
-    }
-
-    .explain {
-      background: #fdfaf2;
-      padding: 1rem;
-      border: 1px dashed var(--ug-dorado);
-      border-radius: 10px;
-      margin-bottom: 1rem;
-    }
-
-    canvas {
-      margin-top: 1.5rem;
-    }
-
-    footer {
-      background: var(--ug-azul);
-      color: white;
-      text-align: center;
-      padding: 1rem;
-    }
+.image p{
+  font-size: 0.85rem;  
+  color: #555;         
+  margin-top: 0.5rem;
+  font-style: italic;  
+}
+canvas{margin-top:2rem}
+footer{
+  background:var(--ug-azul);
+  color:white;
+  text-align:center;
+  padding:1rem;
+}
