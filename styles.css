@@ -44,6 +44,11 @@ section{
   margin-top:1rem;
   font-size:1.1rem;
 }
+.imag{
+  text-align: center;   
+  margin: 2rem 0;  
+      
+}
 .imag img{
   width: 300px;
   height: auto;
