@@ -47,6 +47,7 @@ section{
 .imag img{
   width: 300px;
   height: auto;
+  max-width: 100%;
 }
 .image{
   text-align: center;   
