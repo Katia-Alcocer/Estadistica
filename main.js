@@ -1,3 +1,4 @@
+document.addEventListener("DOMContentLoaded", function(){
 let data = [4,6,8,10,12,9,7,11,5,6];
 
 const colors = [
@@ -162,3 +163,5 @@ const chart = new Chart(document.getElementById("chart"),{
 });
 
 update();
+
+});
