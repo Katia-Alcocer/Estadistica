@@ -162,6 +162,189 @@ const chart = new Chart(document.getElementById("chart"),{
   plugins:[labelPlugin]
 });
 
+
+
+/* ================= QUIZ ================= */
+
+const quizData = [
+{
+  q: "La media aritmética de un conjunto de datos:",
+  options:[
+    "	Es ligeramente mayor a los datos y representa un punto de equilibrio",
+    "	Es ligeramente menor a los datos y representa un punto de equilibrio",
+    "	Está entre los datos y representa un punto de equilibrio"
+  ],
+  answer:2
+},
+{
+  q:"¿Los valores atípicos afectan la media aritmética que representa a un conjunto de datos?",
+  options:[
+    "	Sí, los valores atípicos pueden afectar significativamente la media aritmética de un conjunto de datos",
+    "	No, los valores atípicos no afectan la media aritmética de un conjunto de datos",
+    "	Sí, los valores atípicos afectan significativamente la media aritmética de un conjunto de datos"
+  ],
+  answer:0
+},
+{
+  q:"Suponga que se tiene 10 datos, dos de estos se encuentran por encima de la media aritmética, ¿Cuál de las aseveraciones es correcta? ",
+  options:[
+    "La suma de las desviaciones con respecto a la media de los dos datos es igual a la suma de las desviaciones con respecto a la media de los 8 datos restantes",
+    "La suma de las desviaciones con respecto a la media de los dos datos más la suma de las desviaciones con respecto a la media de los 8 datos es igual a cero",
+    "La suma de las desviaciones con respecto a la media de los dos datos es igual a menos la suma de las desviaciones con respecto a la media de los 8 datos restantes"
+  ],
+  answer:1
+},
+{
+  q:"La desviación estándar de un conjunto de datos:",
+  options:[
+    "Si es baja significa que los datos están muy agrupados cerca de la media aritmética. Si es alta significa que los datos están muy alejados de la media aritmética, lo que indica mayor variabilidad",
+    "Si es baja significa que los datos están no están agrupados cerca de la media aritmética. Si es alta significa que los datos están poco alejados de la media aritmética, lo que indica poca variabilidad"
+  ],
+  answer:0
+},
+{
+  q:"¿Cuál es la media aritmética de los siguientes datos: 1, 2, 1, 3, 1, 2, 3, 4, 4, 3?",
+  options:["3.0","2.4","3.4"],
+  answer:1
+},
+{
+  q:"¿Cuál es la desviación estándar de los siguientes datos: 1, 2, 1, 3, 1, 2, 3, 4, 4, 3?",
+  options:["1.2","XX","0.5"],
+  answer:1
+},
+{
+  q:"Si tengo los siguientes datos: 1, 2, 1, 3, 1, 2, 3, 4, 4, 3 ¿Cuál de los siguientes datos es considerado un número atípico?",
+  options:["-1","35","6"],
+  answer:1
+},
+{
+  q:"Si tengo una distribución simétrica unimodal formada con 200 observaciones, para la cual la media aritmética es igual a 20 y la desviación estándar igual a 0.5. ¿Cuál de las siguientes aseveraciones es verdadera?",
+  options:[
+    "	El 60% de los datos se encuentran en el intervalo [19,21]",
+    "	El 60% de los datos se encuentran en el intervalo [19.5,20.5]",
+    "	Al menos 120 datos se encuentran en el intervalo [19.5,20.5]"
+  ],
+  answer:2
+},
+{
+  q:"Dos máquinas, A y B, producen piezas metálicas cuyo diámetro ideal es de 10 mm. Máquina A: Media aritmética = 10 mm; Desviación estándar = 2.5 mm. Máquina B: Media aritmética= 10.2 mm; Desviación estándar = 0.2 mm.",
+  options:[
+    "	La máquina A produce las piezas con el diámetro requerido pero mucha variación, es decir, produce piezas muy grandes y muy pequeñas. La máquina B produce piezas ligeramente con el diámetro fuera de lo requerido, pero es mucho más predecible",
+    "	La máquina A produce las piezas con el diámetro requerido pero poca variación, es decir, produce piezas muy grandes y muy pequeñas. La máquina B produce piezas ligeramente con el diámetro fuera de lo requerido, pero no es tan predecible."
+  ],
+  answer:0
+},
+{
+  q:"Un excursionista que no sabe nadar llega a un río que debe cruzar a pie. Un letrero dice: 'Profundidad media del río: 1.20 metros'. El excursionista mide 1.70 metros de altura y decide cruzar confiado porque 'el promedio es menor que su estatura'. Encontrar las dos aseveraciones verdaderas",
+  options:[
+    "	Una desviación estándar pequeña indica que hay zonas muy profundas que la media aritmética. El promedio indica la profundidad máxima y la desviación estándar no es necesaria para saber las variaciones de profundidad. ",
+    "	Una desviación estándar alta indica que hay zonas mucho más profundas que la media aritmética (tal vez pozos de 2 metros o más). El promedio no indica la profundidad máxima, solo el equilibrio del conjunto."
+  ],
+  answer:1
+},
+{
+  q:"En un examen de matemáticas, la media del grupo fue de 65/100 con una desviación estándar de 20. En un examen de historia, la media fue de 80/100 con una desviación estándar de 2. Un estudiante obtuvo 75 en matemáticas y 78 en historia.",
+  options:[
+    "	En matemáticas el estudiante fue muy sobresaliente con respecto al grupo por lo que le fue mejor que en historia.  ",
+    "	En historia el estudiante sobresalió porque obtuvo la mayor la nota de los dos exámenes y quedó solo poco debajo de la nota que pocos estudiantes obtuvieron cerca de la media",
+    "	En historia no sobresalió porque, aunque sacó más nota numérica que en Matemáticas, quedó por debajo de la media en un grupo donde casi todos sacaron lo mismo"
+  ],
+  answer:2
+}
+];
+
+/* Mezclar preguntas */
+function shuffle(array){
+  return array.sort(()=>Math.random()-0.5);
+}
+
+const startBtn = document.getElementById("startQuizBtn");
+const panel = document.getElementById("quizPanel");
+const form = document.getElementById("quizForm");
+const result = document.getElementById("quizResult");
+const retryBtn = document.getElementById("retryQuiz");
+
+startBtn.onclick = ()=>{
+  panel.classList.remove("hidden");
+  setTimeout(()=>panel.classList.add("show"),10);
+  document.body.classList.add("quiz-open"); // 👈 clave
+  loadQuiz();
+};
+
+function loadQuiz(){
+  form.innerHTML = "";
+  result.innerHTML = "";
+  retryBtn.classList.add("hidden");
+
+  const shuffled = shuffle([...quizData]);
+
+  shuffled.forEach((q,i)=>{
+    const div = document.createElement("div");
+    div.innerHTML = `<h3>${i+1}. ${q.q}</h3>`;
+
+    q.options.forEach((opt,j)=>{
+      div.innerHTML += `
+        <label>
+          <input type="radio" name="q${i}" value="${j}">
+          ${opt}
+        </label>
+      `;
+    });
+
+    form.appendChild(div);
+  });
+
+  form.dataset.answers = JSON.stringify(shuffled.map(q=>q.answer));
+}
+
+document.getElementById("submitQuiz").onclick = ()=>{
+  const answers = JSON.parse(form.dataset.answers);
+  let score = 0;
+
+  answers.forEach((correctAnswer,i)=>{
+    const options = form.querySelectorAll(`input[name="q${i}"]`);
+
+    options.forEach(opt=>{
+      const label = opt.parentElement;
+      label.classList.remove("correct","incorrect");
+
+      if(parseInt(opt.value) === correctAnswer){
+        label.classList.add("correct");
+      }
+
+      if(opt.checked && parseInt(opt.value) !== correctAnswer){
+        label.classList.add("incorrect");
+      }
+    });
+
+    const selected = form.querySelector(`input[name="q${i}"]:checked`);
+    if(selected && parseInt(selected.value) === correctAnswer){
+      score++;
+    }
+  });
+
+  result.innerHTML = `
+    <h3>Resultado: ${score} / ${answers.length}</h3>
+  `;
+
+  retryBtn.classList.remove("hidden");
+};
+
+retryBtn.onclick = loadQuiz;
+
+
+const closeBtn = document.getElementById("closeQuiz");
+
+closeBtn.onclick = ()=>{
+  panel.classList.remove("show");
+  setTimeout(()=>{
+    panel.classList.add("hidden");
+  },300);
+
+  document.body.classList.remove("quiz-open");
+};
+
 update();
 
 });
+
