@@ -36,8 +36,10 @@ const labelPlugin = {
         const y = point.y;
 
         /* Etiquetas de puntos */
-        if(dataset.label === "Datos"){
-          ctx.fillText(`x${i+1} = ${data[i]}`, x + 8, y - 8);
+       if(dataset.label === "Datos"){
+          const d = data[i] - m; // desviación respecto a la media
+          ctx.fillStyle = d >= 0 ? "#27AE60" : "#C0392B";//Cambiar color dependiendo si se encuentra arriba o abajo de la media 
+          ctx.fillText(`d${i+1} = ${d.toFixed(2)}`, x + 8, y - 8);
         }
 
         /* Etiquetas de líneas (solo último punto) */
