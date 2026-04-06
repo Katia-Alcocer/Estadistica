@@ -16,6 +16,20 @@ function stdDev(a){
   return Math.sqrt(a.reduce((s,x)=>s+(x-m)**2,0)/a.length);
 }
 
+function roundRect(ctx, x, y, w, h, r){
+  ctx.beginPath();
+  ctx.moveTo(x+r, y);
+  ctx.lineTo(x+w-r, y);
+  ctx.quadraticCurveTo(x+w, y, x+w, y+r);
+  ctx.lineTo(x+w, y+h-r);
+  ctx.quadraticCurveTo(x+w, y+h, x+w-r, y+h);
+  ctx.lineTo(x+r, y+h);
+  ctx.quadraticCurveTo(x, y+h, x, y+h-r);
+  ctx.lineTo(x, y+r);
+  ctx.quadraticCurveTo(x, y, x+r, y);
+  ctx.closePath();
+}
+
 /* ===== PLUGIN ETIQUETAS + TEXTO AUTOMÁTICO ===== */
 const labelPlugin = {
   id:'valueLabels',
@@ -38,8 +52,31 @@ const labelPlugin = {
         /* Etiquetas de puntos */
        if(dataset.label === "Datos"){
           const d = data[i] - m; // desviación respecto a la media
-          ctx.fillStyle = d >= 0 ? "#27AE60" : "#C0392B";//Cambiar color dependiendo si se encuentra arriba o abajo de la media 
-          ctx.fillText(`d${i+1} = ${d.toFixed(2)}`, x + 8, y - 8);
+         //Cambiar color dependiendo si se encuentra arriba o abajo de la media 
+          
+          const text = `d${i+1} = ${d.toFixed(2)}`;
+
+          // medir tamaño del texto
+          const padding = 4;
+          const textWidth = ctx.measureText(text).width;
+          const textHeight = 12; // aprox por la fuente
+
+          const rectX = x + 8;
+          const rectY = y - 18;
+
+          // fondo del cuadro
+          ctx.fillStyle = "rgba(255,255,255,0.85)"; // blanco
+         ctx.fillStyle = "rgba(255,255,255,0.9)";
+          roundRect(ctx, rectX - padding, rectY - textHeight, textWidth + padding*2, textHeight + padding, 6);
+          ctx.fill();
+
+          ctx.strokeStyle = "#ffff";
+          ctx.stroke();
+          // color del texto según signo
+          ctx.fillStyle = d >= 0 ? "#27AE60" : "#C0392B";
+
+          // texto
+          ctx.fillText(text, rectX, rectY);
         }
 
         /* Etiquetas de líneas (solo último punto) */
@@ -79,6 +116,7 @@ function update(){
 
   document.getElementById("meanValue").textContent = m.toFixed(2);
   document.getElementById("stdValue").textContent  = s.toFixed(2);
+ 
 
   document.getElementById("meanCalc").innerHTML =
     `x̄ = (${data.map((x,i)=>`<span style="color:${colors[i]}">${x}</span>`).join(" + ")}) / ${data.length}
@@ -87,6 +125,9 @@ function update(){
   document.getElementById("stdCalc").innerHTML =
     `σ = √( ${data.map((x,i)=>`(<span style="color:${colors[i]}">${(x-m).toFixed(2)}</span>)²`).join(" + ")} / ${data.length} )
      = <strong>${s.toFixed(2)}</strong>`;
+
+  
+
 
   chart.data.datasets.forEach(ds=>{
     if(ds.label==="Media") ds.data.forEach(p=>p.y=m);
@@ -107,6 +148,48 @@ function update(){
       pointRadius:0
     });
   });
+
+// ===== PROPIEDAD DE LA MEDIA =====
+const mFixed = m.toFixed(1);
+
+// d₁ + d₂ + ...
+const sumaD = data.map((x,i)=>{
+  const diff = x - m;
+  const color = diff >= 0 ? "#27AE60" : "#C0392B";
+  return `<span style="color:${color}">d<sub>${i+1}</sub></span>`;
+ 
+}).join(" + ");
+
+// (x - media) con color según signo
+const desarrollo = data.map(x=>{
+  const diff = (x - m);
+  const color = diff >= 0 ? "#27AE60" : "#C0392B";
+  return `<span style="color:${color}">(${x}-${mFixed})</span>`;
+}).join(" + ");
+
+// suma de desviaciones (por si quieres mostrar que da 0)
+const sumaTotal = data.reduce((acc,x)=>acc+(x-m),0).toFixed(2);
+
+document.getElementById("propiedadMedia").innerHTML = `
+<strong>Propiedad de la media aritmética</strong><br>
+${sumaD} = 0<br>
+${desarrollo} = <strong>${sumaTotal}</strong>
+`;
+
+// ===== REGLA EMPÍRICA =====
+const lower = (m - s).toFixed(1);
+const upper = (m + s).toFixed(1);
+
+document.getElementById("reglaEmpirica").innerHTML = `
+<strong>Regla empírica sobre la desviación estándar</strong><br><br>
+Si los datos se agrupan y forman una distribución simétrica unimodal, 
+entonces al menos el 60% de los datos están contenidos en el intervalo 
+[
+  <span style="color:#C0392B">${lower}</span>, 
+  <span style="color:#27AE60">${upper}</span>
+</span>
+].
+`;
 
   chart.update();
 }
