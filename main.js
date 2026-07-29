@@ -249,6 +249,176 @@ const chart = new Chart(document.getElementById("chart"),{
 
 
 
+/* ================= EJEMPLO 2: DATOS AGRUPADOS ================= */
+const groupedMarks = [153, 160, 167, 174, 181, 188];
+const groupedLabels = ["150–156", "157–163", "164–170", "171–177", "178–184", "185–191"];
+const groupedFixedFrequencies = [1, null, null, null, 17, 1];
+
+const groupedChart = new Chart(document.getElementById("groupedBarChart"), {
+  type: "bar",
+  data: {
+    labels: groupedLabels,
+    datasets: [{
+      label: "Frecuencia",
+      data: [1, 21, 54, 22, 17, 1],
+      backgroundColor: "rgba(0, 58, 143, 0.72)",
+      borderColor: "#003A8F",
+      borderWidth: 1
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { display: false },
+      title: { display: true, text: "Distribución de frecuencias por intervalo de altura" }
+    },
+    scales: {
+      x: { title: { display: true, text: "Altura (cm)" } },
+      y: {
+        beginAtZero: true,
+        ticks: { precision: 0 },
+        title: { display: true, text: "Frecuencia" }
+      }
+    }
+  }
+});
+
+function getGroupedFrequencies(){
+  const editable = ["freq2", "freq3", "freq4"].map(id => {
+    const input = document.getElementById(id);
+    const value = Math.max(0, Math.trunc(Number(input.value) || 0));
+    input.value = value;
+    return value;
+  });
+
+  return [
+    groupedFixedFrequencies[0],
+    editable[0],
+    editable[1],
+    editable[2],
+    groupedFixedFrequencies[4],
+    groupedFixedFrequencies[5]
+  ];
+}
+
+function groupedMedian(frequencies){
+  const total = frequencies.reduce((sum, value) => sum + value, 0);
+  if(total === 0) return 0;
+
+  const half = total / 2;
+  let cumulative = 0;
+
+  for(let i = 0; i < frequencies.length; i++){
+    const previous = cumulative;
+    cumulative += frequencies[i];
+
+    if(cumulative >= half){
+      const lowerBoundary = 149.5 + (i * 7);
+      const classWidth = 7;
+      const classFrequency = frequencies[i];
+
+      if(classFrequency === 0) return groupedMarks[i];
+      return lowerBoundary + ((half - previous) / classFrequency) * classWidth;
+    }
+  }
+
+  return groupedMarks[groupedMarks.length - 1];
+}
+
+function updateGroupedExample(){
+  const frequencies = getGroupedFrequencies();
+  const total = frequencies.reduce((sum, value) => sum + value, 0);
+  document.getElementById("groupedTotal").textContent = total;
+
+  groupedChart.data.datasets[0].data = frequencies;
+  groupedChart.update();
+
+  const meanNumerator = groupedMarks.reduce(
+    (sum, mark, index) => sum + mark * frequencies[index], 0
+  );
+  const groupedMean = total > 0 ? meanNumerator / total : 0;
+
+  const varianceNumerator = groupedMarks.reduce(
+    (sum, mark, index) => sum + frequencies[index] * ((mark - groupedMean) ** 2), 0
+  );
+  const groupedStd = total > 0 ? Math.sqrt(varianceNumerator / total) : 0;
+  const median = groupedMedian(frequencies);
+
+  // Coeficiente de asimetría de Pearson: As = 3(x̄ − Me) / σ.
+  const pearsonSkewness = groupedStd > 0
+    ? (3 * (groupedMean - median)) / groupedStd
+    : 0;
+
+  // Criterio didáctico: |As| <= 0.5 se interpreta como aproximadamente simétrica.
+  const isSymmetric = Math.abs(pearsonSkewness) <= 0.5;
+  const lower = groupedMean - groupedStd;
+  const upper = groupedMean + groupedStd;
+
+  const insideFrequency = groupedMarks.reduce((sum, mark, index) => {
+    return sum + (mark >= lower && mark <= upper ? frequencies[index] : 0);
+  }, 0);
+  const insidePercentage = total > 0 ? (insideFrequency / total) * 100 : 0;
+
+  const meanTerms = groupedMarks
+    .map((mark, index) => `${mark} × ${frequencies[index]}`)
+    .join(" + ");
+
+  const stdTerms = groupedMarks
+    .map((mark, index) => `(${mark} − ${groupedMean.toFixed(2)})² × ${frequencies[index]}`)
+    .join(" + ");
+
+  document.getElementById("groupedMeanCalc").innerHTML = `
+    <strong>Media aritmética para datos agrupados</strong><br><br>
+    x̄ = (${meanTerms}) / ${total || 1}
+    = <strong>${groupedMean.toFixed(2)} cm</strong>
+  `;
+
+  document.getElementById("groupedStdCalc").innerHTML = `
+    <strong>Desviación estándar poblacional</strong><br><br>
+    σ = √[(${stdTerms}) / ${total || 1}]
+    = <strong>${groupedStd.toFixed(2)} cm</strong>
+  `;
+
+  document.getElementById("groupedSymmetryCalc").innerHTML = `
+    <strong>Comprobación de simetría</strong><br><br>
+    Me ≈ ${median.toFixed(2)} cm<br>
+    A<sub>s</sub> = 3(x̄ − Me) / σ
+    = 3(${groupedMean.toFixed(2)} − ${median.toFixed(2)}) / ${groupedStd.toFixed(2) || "0"}
+    = <strong>${pearsonSkewness.toFixed(3)}</strong><br>
+    Criterio usado: si |A<sub>s</sub>| ≤ 0.5, la distribución se considera aproximadamente simétrica.
+  `;
+
+  const interpretation = document.getElementById("groupedInterpretation");
+  interpretation.className = `symmetry-message ${isSymmetric ? "symmetric" : "asymmetric"}`;
+
+  if(total === 0){
+    interpretation.innerHTML = "Ingresa al menos una frecuencia mayor que cero para realizar los cálculos.";
+  }else if(isSymmetric){
+    interpretation.innerHTML = `
+      <strong>La distribución es aproximadamente simétrica.</strong>
+      El intervalo x̄ ± σ es [${lower.toFixed(2)}, ${upper.toFixed(2)}] cm.
+      Usando las marcas de clase como aproximación, ${insideFrequency} de ${total} datos
+      (${insidePercentage.toFixed(1)}%) se encuentran dentro de ese intervalo.
+    `;
+  }else{
+    const direction = pearsonSkewness > 0 ? "hacia la derecha" : "hacia la izquierda";
+    interpretation.innerHTML = `
+      <strong>La distribución no se considera simétrica;</strong> presenta asimetría ${direction}.
+      Por ello, no debe aplicarse automáticamente la afirmación del 60% basada en una distribución simétrica unimodal.
+      Como referencia, el intervalo x̄ ± σ es [${lower.toFixed(2)}, ${upper.toFixed(2)}] cm y contiene,
+      usando las marcas de clase, ${insidePercentage.toFixed(1)}% de los datos.
+    `;
+  }
+}
+
+["freq2", "freq3", "freq4"].forEach(id => {
+  document.getElementById(id).addEventListener("input", updateGroupedExample);
+});
+
+updateGroupedExample();
+
+
 /* ================= QUIZ ================= */
 
 const quizData = [
@@ -294,7 +464,7 @@ const quizData = [
 },
 {
   q:"¿Cuál es la desviación estándar de los siguientes datos: 1, 2, 1, 3, 1, 2, 3, 4, 4, 3?",
-  options:["1.2","XX","0.5"],
+  options:["1.2","1.14","0.5"],
   answer:1
 },
 {
@@ -348,11 +518,15 @@ const panel = document.getElementById("quizPanel");
 const form = document.getElementById("quizForm");
 const result = document.getElementById("quizResult");
 const retryBtn = document.getElementById("retryQuiz");
+const backdrop = document.getElementById("quizBackdrop");
 
 startBtn.onclick = ()=>{
   panel.classList.remove("hidden");
-  setTimeout(()=>panel.classList.add("show"),10);
-  document.body.classList.add("quiz-open"); // 👈 clave
+  panel.classList.remove("minimized");
+  requestAnimationFrame(()=>{
+    panel.classList.add("show");
+  });
+  document.body.classList.add("quiz-open")
   loadQuiz();
 };
 
@@ -420,14 +594,30 @@ retryBtn.onclick = loadQuiz;
 
 const closeBtn = document.getElementById("closeQuiz");
 
-closeBtn.onclick = ()=>{
+function closeQuiz(){
   panel.classList.remove("show");
+  panel.classList.remove("minimized");
   setTimeout(()=>{
     panel.classList.add("hidden");
-  },300);
-
+  },250);
   document.body.classList.remove("quiz-open");
+}
+
+
+const minimizeBtn = document.getElementById("minimizeQuiz");
+minimizeBtn.onclick = ()=>{
+  const isMinimized = panel.classList.toggle("minimized");
+  minimizeBtn.textContent = isMinimized ? "▢" : "—";
+  minimizeBtn.setAttribute("aria-label", isMinimized ? "Restaurar cuestionario" : "Minimizar cuestionario");
+  minimizeBtn.title = isMinimized ? "Restaurar cuestionario" : "Minimizar cuestionario";
 };
+
+closeBtn.onclick = closeQuiz;
+document.addEventListener("keydown", (event)=>{
+  if(event.key === "Escape" && panel.classList.contains("show")){
+    closeQuiz();
+  }
+});
 
 update();
 

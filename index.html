@@ -119,12 +119,20 @@ un valor bajo indica datos concentrados cerca de la media.
 📏 Observa cómo cambian la media y la desviación estándar.
 </div>
 
-<canvas id="chart"></canvas>
+<div class="interactive-chart-box">
+  <canvas id="chart"></canvas>
+</div>
 
 <div class="values">
-<strong>Media Aritmética:</strong> <span id="meanValue"></span><br>
-<strong>Desviación estándar:</strong> <span id="stdValue"></span>
-</div>
+  <div class="value-item">
+    <strong>Media aritmética:</strong>
+    <span id="meanValue"></span>
+  </div>
+
+  <div class="value-item">
+    <strong>Desviación estándar:</strong>
+    <span id="stdValue"></span>
+  </div>
 </div>
 
 <div class="card">
@@ -138,15 +146,64 @@ un valor bajo indica datos concentrados cerca de la media.
 </div>
 
 
+
+<div class="card" id="ejemploAgrupado">
+  <h2>Ejemplo 2: Estaturas de personas (datos agrupados)</h2>
+  <p>
+    Modifica únicamente las frecuencias de las clases 2, 3 y 4. El total, la gráfica,
+    la media, la desviación estándar y la interpretación de simetría se actualizarán automáticamente.
+  </p>
+
+  <div class="grouped-layout">
+    <div class="table-wrap">
+      <table class="frequency-table">
+        <thead>
+          <tr>
+            <th>Clase</th>
+            <th>Altura (cm)</th>
+            <th>Marca de clase, m<sub>i</sub> (cm)</th>
+            <th>Frecuencia, f<sub>i</sub></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>1</td><td>150–156</td><td>153</td><td>1</td></tr>
+          <tr><td>2</td><td>157–163</td><td>160</td><td><input class="frequency-input" id="freq2" type="number" min="0" step="1" value="21" aria-label="Frecuencia de la clase 2"></td></tr>
+          <tr><td>3</td><td>164–170</td><td>167</td><td><input class="frequency-input" id="freq3" type="number" min="0" step="1" value="54" aria-label="Frecuencia de la clase 3"></td></tr>
+          <tr><td>4</td><td>171–177</td><td>174</td><td><input class="frequency-input" id="freq4" type="number" min="0" step="1" value="22" aria-label="Frecuencia de la clase 4"></td></tr>
+          <tr><td>5</td><td>178–184</td><td>181</td><td>17</td></tr>
+          <tr><td>6</td><td>185–191</td><td>188</td><td>1</td></tr>
+        </tbody>
+        <tfoot>
+          <tr><th colspan="3">Total</th><th id="groupedTotal">116</th></tr>
+        </tfoot>
+      </table>
+    </div>
+
+    <div class="grouped-chart-box">
+      <canvas id="groupedBarChart"></canvas>
+    </div>
+  </div>
+
+  <div id="groupedMeanCalc" class="formula"></div>
+  <div id="groupedStdCalc" class="formula"></div>
+  <div id="groupedSymmetryCalc" class="formula"></div>
+  <div id="groupedInterpretation" class="symmetry-message" role="status"></div>
+</div>
+
 <button id="startQuizBtn" class="quiz-btn">
   Intentar resolver cuestionario
 </button>
 
-<!-- PANEL LATERAL -->
- 
-<div id="quizPanel" class="quiz-panel hidden">
-  <button id="closeQuiz" class="close-btn">✖</button>
-  <h2>Cuestionario</h2>
+<!-- VENTANA DEL CUESTIONARIO -->
+<div id="quizBackdrop" class="quiz-backdrop hidden" aria-hidden="true"></div>
+<div id="quizPanel" class="quiz-panel hidden" role="dialog" aria-modal="false" aria-labelledby="quizTitle">
+  <button id="minimizeQuiz" class="minimize-btn" type="button" aria-label="Minimizar cuestionario" title="Minimizar cuestionario">—</button>
+  <button id="closeQuiz" class="close-btn" type="button" aria-label="Cerrar cuestionario" title="Cerrar cuestionario">✖</button>
+  <div class="quiz-heading">
+    <span class="quiz-kicker">Actividad de repaso</span>
+    <h2 id="quizTitle">Cuestionario</h2>
+    <p>Selecciona una respuesta en cada pregunta y después evalúa tus resultados.</p>
+  </div>
 
   <form id="quizForm"></form>
 
